@@ -4,10 +4,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import dotenv from "dotenv"
 
-import postRoutes from './routes/postRoutes.js'
 import authRoutes from './routes/authRoutes.js'
-import categoryRoutes from './routes/categoryRoutes.js'
-import commentRoutes from './routes/commentRoutes.js'
 
 dotenv.config();
 
@@ -22,9 +19,6 @@ app.use(cors({
 app.use(bodyParser.json());
 
 app.use('/api/auth', authRoutes)
-app.use('/api/categories', categoryRoutes)
-app.use('/api/posts', postRoutes)
-app.use('/api/comments', commentRoutes)
 
 // Connect to MongoDB
 connect(process.env.MONGO_URI)

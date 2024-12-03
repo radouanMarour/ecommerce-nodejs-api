@@ -1,14 +1,14 @@
-import User from '../models/User'
-import express from express
+import User from '../models/User.js'
+import express from 'express'
 
 const router = express.Router()
 
 // Signup the user
 router.post('/signup', async (req, res) => {
-    const { email, password, name } = req.body;
+    const { email, confirmPassword, password, name } = req.body;
 
     if (!name || !email || !password) {
-        res.status(400).json({
+        return res.status(400).json({
             status: "error",
             message: "Name, Email and Password are required"
         })
@@ -22,10 +22,14 @@ router.post('/signup', async (req, res) => {
         return res.status(400).json({ status: 'error', message: 'Password must be at least 8 characters long' });
     }
 
+    if (password !== confirmPassword) {
+        return res.status(400).json({ status: 'error', message: 'Passwords not matchs' });
+    }
+
     try {
         const userExists = await User.findOne({ email })
         if (userExists) {
-            res.status(400).json({
+            return res.status(400).json({
                 status: "error",
                 message: "User already exists"
             })
@@ -34,7 +38,7 @@ router.post('/signup', async (req, res) => {
         await newUser.save()
         res.status(201).json({
             status: "succeed",
-            message: "User created successfully"
+            message: "You account has been created successfully"
         })
     } catch (error) {
         console.error(error)
@@ -51,7 +55,7 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body
 
     if (!email || !password) {
-        res.status(400).json({
+        return res.status(400).json({
             status: "error",
             message: "Email and Password are required"
         })
@@ -59,14 +63,14 @@ router.post('/login', async (req, res) => {
     try {
         const user = await User.findOne({ email })
         if (!user) {
-            res.status(401).json({
+            return res.status(401).json({
                 status: "error",
                 message: "Invalid credentials"
             })
         }
         const passwordMatch = user.comparePassword(user.password, password)
         if (!passwordMatch) {
-            res.status(401).json({
+            return res.status(401).json({
                 status: "error",
                 message: "Invalid credentials"
             })

@@ -42,18 +42,18 @@ const userSchema = new mongoose.Schema({
     }
 }, { timestamps: true })
 
-userSchema.pre('save', async (next) => {
+userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) next();
     this.password = await bcrypt.hash(this.password, 10)
     next()
 
 })
 
-userSchema.methods.comparePassword = async (enteredPassword) => {
+userSchema.methods.comparePassword = async function (enteredPassword) {
     return bcrypt.compare(enteredPassword, this.password)
 }
 
-userSchema.methods.generateToken = () => {
+userSchema.methods.generateToken = function () {
     const payload = {
         id: this._id,
         role: this.role

@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import dotenv from "dotenv"
 
 import authRoutes from './routes/authRoutes.js'
+import categoryRoutes from './routes/categoryRoutes.js'
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use('/api', categoryRoutes)
 app.use('/api/auth', authRoutes)
 
 // Connect to MongoDB
